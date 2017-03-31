@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env nodejs
 
 const hyperquest  = require('hyperzip')(require('hyperdirect'))
     , bl          = require('bl')
@@ -9,13 +9,15 @@ const hyperquest  = require('hyperzip')(require('hyperdirect'))
     , files       = require('./files')
     , testReplace = require('./test-replacements')
 
-    , srcurlpfx   = 'https://raw.github.com/joyent/node/v' + process.argv[2] + '-release/'
+    , srcurlpfx   = 'https://raw.githubusercontent.com/nodejs/node/v' + process.argv[2] + '/'
     , libsrcurl   = srcurlpfx + 'lib/'
     , testsrcurl  = srcurlpfx + 'test/simple/'
-    , testlisturl = 'https://github.com/joyent/node/tree/v' + process.argv[2] + '-release/test/simple'
+    , testlisturl = 'https://github.com/nodejs/node/tree/v' + process.argv[2] + '/test/parallel/'
     , libourroot  = path.join(__dirname, '../')
     , testourroot = path.join(__dirname, '../test/simple/')
 
+
+console.log(srcurlpfx);
 
 function processFile (url, out, replacements) {
   hyperquest(url).pipe(bl(function (err, data) {
@@ -41,6 +43,7 @@ function processLibFile (file) {
     , url          = libsrcurl + file
     , out          = path.join(libourroot, replacements.out || file)
 
+  console.log('url to lib ',url)
   processFile(url, out, replacements)
 }
 
@@ -53,15 +56,17 @@ function processTestFile (file) {
   if (testReplace[file])
     replacements = replacements.concat(testReplace[file])
 
+  console.log('Test url ',url)
   processFile(url, out, replacements)
 }
 
 
-if (!/0\.1\d\.\d+/.test(process.argv[2])) {
-  console.log('Usage: build.js <node version>')
-  return process.exit(-1)
-}
+//if (!/0\.1\d\.\d+/.test(process.argv[2])) {
+//  console.log('Usage: build.js <node version>')
+//  return process.exit(-1)
+//}
 
+console.log('Test dir ', testlisturl)
 
 //--------------------------------------------------------------------
 // Grab & process files in ../lib/
@@ -77,8 +82,12 @@ hyperquest(testlisturl).pipe(bl(function (err, data) {
 
   var $ = cheerio.load(data.toString())
 
+    console.log('ok')
+
   $('table.files .js-directory-link').each(function () {
+
     var file = $(this).text()
+    console.log('list ', file); 
     if (/^test-string-decoder/.test(file) || file == 'common.js')
       processTestFile(file)
   })
