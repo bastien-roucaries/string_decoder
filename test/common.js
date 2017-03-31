@@ -96,6 +96,7 @@ process.on('exit', function() {
                       clearTimeout,
                       clearInterval,
                       typeof clearImmediate == 'undefined' ? null : clearImmediate,
+		      typeof Reporter == 'undefined' ? null : Reporter,
                       console,
                       Buffer,
                       process,
