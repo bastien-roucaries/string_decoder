@@ -1,14 +1,14 @@
 {
   "name": "string_decoder",
-  "version": "1.0.0",
+  "version": "4.7.2",
   "description": "the string_decoder module from node core for browsers",
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
-    "tap": "~0.4.8"
+    "assert",
   },
   "scripts": {
-    "test": "tap test/simple/*.js"
+    "test": "node test/simple/*.js"
   },
   "repository": {
     "type": "git",
